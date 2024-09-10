@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, SafeAreaView, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Image, SafeAreaView, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react';
 import header_img_1 from "../../../assets/images/welcome/logo(1).png";
 import header_img_2 from "../../../assets/images/welcome/Maskgroup.png";
@@ -26,7 +26,10 @@ const Welcome = () => {
     <CustomBtn style={{position:'absolute', top:735}} title={"Let's Start"} action={handleAction} />
     <View style={styles.footerTextContainer}>
     <Text style={styles.footerTxt}>Already  have an account?</Text>
+    <TouchableOpacity onPress={()=> router.navigate('/(tabs)/sign-in')}>
     <Text style={[styles.footerTxt, {fontWeight:'bold', textDecorationLine:'underline'}]}>Sign in</Text>
+    </TouchableOpacity>
+    
     </View>
     </SafeAreaView>
   )
