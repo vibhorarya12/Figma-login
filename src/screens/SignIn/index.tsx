@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Main_img from "../../../assets/images/welcome/logo.png";
@@ -8,12 +8,40 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import CustomBtn from '@/src/components/CustomBtn';
 import { router } from 'expo-router';
 const SignInScreen = () => {
-    const [text, setText] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const handleAction = () => {
-        console.log("hello");
-    }
+    const [showPassword, setShowPassword] = useState(true);
+    const [loading , setLoading] = useState(false);
+    const handleAction = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('https://tor.appdevelopers.mobi/api/login', {
+                method: 'POST', // Specify the HTTP method
+                headers: {
+                    'Content-Type': 'application/json', // Specify the content type
+                },
+                body: JSON.stringify({ phone, password }) // Convert phone and password to JSON
+            });
+    
+            // Optional: handle the response, check status, etc.
+            const data = await response.json();
+            if (response.ok && data.status ) {
+                console.log("Login successful", data.data.name);
+                router.navigate({
+                    pathname: '/(tabs)/sign-up-2',
+                    params: { name: data.data.name }
+                });
+            } else {
+                alert('invalid credentials')
+            }
+    
+        } catch (error) {
+            console.error("Error during login:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
 
     return (
         <SafeAreaView style={styles.container}>
@@ -24,12 +52,12 @@ const SignInScreen = () => {
                     Hi ! Welcome back, you have been missed
                 </Text>
             </View>
-            <View style={{ position: 'absolute', width: 39, height: 21, top: 366, left: 24 }}>
-                <Text style={{ fontWeight: '500', fontSize: 14, lineHeight: 21 }}>Email</Text>
+            <View style={{ position: 'absolute', width: 47, height: 21, top: 366, left: 24 }}>
+                <Text style={{ fontWeight: '500', fontSize: 14, lineHeight: 21 }}>Phone</Text>
             </View>
             <View style={styles.inputTxtContainer}>
-                <Ionicons color={'#808080'} name='mail-outline' size={24} />
-                <TextInput placeholderTextColor={'#808080'} cursorColor={'green'} placeholder='xyz@gmail.com' onChangeText={(e) => setText(e)} value={text} style={{ width: 104, borderColor: 'red', height: 21 }} />
+                <Ionicons color={'#808080'} name='call-outline' size={24} />
+                <TextInput keyboardType={'number-pad'} placeholderTextColor={'#808080'} cursorColor={'green'} placeholder='Phone number' onChangeText={(e) => setPhone(e)} value={phone} style={{ width: 104, borderColor: 'red', height: 21 }} />
             </View>
             {/* PasswordLabel */}
             <View style={{ position: 'absolute', width: 69, height: 21, top: 464, left: 24 }}>
@@ -58,7 +86,7 @@ const SignInScreen = () => {
             </View>
 
             {/* signin button */}
-            <CustomBtn style={{ position: 'absolute', top: 607, height: 61 }} title={"Sign In"} action={handleAction} />
+        {loading?<ActivityIndicator size={35} style={{position: 'absolute', top: 607}}/>:<CustomBtn style={{ position: 'absolute', top: 607, height: 61 }} title={"Sign In"} action={handleAction} />}
 
                 {/* divider */}
             <View style={{ width: 275, height: 16.29, position: 'absolute', top: 692, flexDirection: 'row', gap: 5 , left:77}}>
