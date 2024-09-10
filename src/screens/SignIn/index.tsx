@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Main_img from "../../../assets/images/welcome/logo.png";
@@ -13,6 +13,13 @@ const SignInScreen = () => {
     const [showPassword, setShowPassword] = useState(true);
     const [loading , setLoading] = useState(false);
     const handleAction = async () => {
+        if (!phone || !phone || !password) {
+            Alert.alert(
+                'Error',
+                'Please fill in all the fields'
+            );
+            return; 
+        }
         setLoading(true);
         try {
             const response = await fetch('https://tor.appdevelopers.mobi/api/login', {
@@ -67,7 +74,7 @@ const SignInScreen = () => {
                 <Ionicons color={'#808080'} name='lock-closed-outline' size={24} />
                 <TextInput secureTextEntry={showPassword} placeholderTextColor={'#808080'} cursorColor={'green'} placeholder='password' onChangeText={(e) => setPassword(e)} value={password} style={{ width: 104, borderColor: 'red', height: 21 }} />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ left: 180 }}>
-                    <Ionicons color={'#808080'} name='eye-outline' size={24} />
+                    <Ionicons color={'#808080'} name={!showPassword?'eye-outline':'eye-off-outline'} size={24} />
                 </TouchableOpacity>
 
             </View>
